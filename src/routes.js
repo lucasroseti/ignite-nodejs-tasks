@@ -26,6 +26,11 @@ export const routes = [
     handler: (req, res) => {
       const { title , description  } = req.body
       const current_date = new Date()
+
+      if (!title || !description) {
+        return res.writeHead(400).end('Fields title and description are required')
+      }
+
       const task = {
         id: randomUUID(),
         title ,
@@ -46,6 +51,10 @@ export const routes = [
     handler: (req, res) => {
       const { id } = req.params
       const { title, description } = req.body
+
+      if (!title || !description) {
+        return res.writeHead(400).end('Fields title and description are required')
+      }
 
       const data = { title, description }
 
