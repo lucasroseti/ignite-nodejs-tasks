@@ -49,9 +49,13 @@ export const routes = [
 
       const data = { title, description }
 
-      database.update('tasks', id, removeUninformedFields(data))
-
-      return res.writeHead(204).end()
+      const taskToUpdate = database.update('tasks', id, removeUninformedFields(data))
+      
+      if (taskToUpdate) {
+        return res.writeHead(204).end()
+      } else {
+        return res.writeHead(404).end('Task not found')
+      }
     },
   },
   {
@@ -63,11 +67,15 @@ export const routes = [
 
       const task = database.selectById('tasks', id)
 
-      task.completed_at = task.completed_at === null ? current_date : null
+      if (task) {
+        task.completed_at = task.completed_at === null ? current_date : null
+  
+        database.update('tasks', id, task)
+  
+        return res.writeHead(204).end()
+      }
 
-      database.update('tasks', id, task)
-
-      return res.writeHead(204).end()
+      return res.writeHead(404).end('Task not found')
     },
   },
   {
@@ -76,9 +84,13 @@ export const routes = [
     handler: (req,res) => {
       const { id } = req.params
 
-      database.delete('tasks', id)
+      const taskToDelete = database.delete('tasks', id)
 
-      return res.writeHead(204).end()
+      if (taskToDelete) {
+        return res.writeHead(204).end()
+      } else {
+        return res.writeHead(404).end('Task not found')
+      }
     }
   }
 ]
