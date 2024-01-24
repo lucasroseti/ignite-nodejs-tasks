@@ -55,6 +55,22 @@ export const routes = [
     },
   },
   {
+    method: 'PATCH',
+    path: buildRoutePath('/tasks/:id/complete'),
+    handler: (req, res) => {
+      const { id } = req.params
+      const current_date = new Date()
+
+      const task = database.selectById('tasks', id)
+
+      task.completed_at = task.completed_at === null ? current_date : null
+
+      database.update('tasks', id, task)
+
+      return res.writeHead(204).end()
+    },
+  },
+  {
     method: 'DELETE',
     path: buildRoutePath('/tasks/:id'),
     handler: (req,res) => {
