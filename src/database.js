@@ -44,4 +44,15 @@ export class Database {
 
     return data
   }
+
+  update(table, id, data) {
+    const rowIndex = this.#database[table].findIndex(row => row.id === id)
+
+    if (rowIndex > -1) {
+      const dataToUpdated = this.#database[table][rowIndex]
+      
+      this.#database[table][rowIndex] = Object.assign(dataToUpdated, data)
+      this.#persist()
+    }
+  }
 }

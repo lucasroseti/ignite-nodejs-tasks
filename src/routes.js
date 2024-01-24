@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { Database } from './database.js'
 import { buildRoutePath } from './utils/build-route.path.js'
+import { removeUninformedFields } from './utils/remove-uninformed-fields.js'
 
 const database = new Database()
 
@@ -37,6 +38,20 @@ export const routes = [
       database.insert('tasks', task)
 
       return res.writeHead(201).end()
+    },
+  },
+  {
+    method: 'PUT',
+    path: buildRoutePath('/tasks/:id'),
+    handler: (req, res) => {
+      const { id } = req.params
+      const { title, description } = req.body
+
+      const data = { title, description }
+
+      database.update('tasks', id, removeUninformedFields(data))
+
+      return res.writeHead(204).end()
     },
   },
 ]
